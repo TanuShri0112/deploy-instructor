@@ -77,52 +77,54 @@ const UnitsBuilder = () => {
   };
 
   const handleCreateLesson = () => {
-    if (!newLessonData.title.trim()) {
-      toast({
-        title: "Title Required",
-        description: "Please enter a title for your lesson.",
-        variant: "destructive",
-      });
-      return;
-    }
+  if (!newLessonData.title.trim()) {
+    toast({
+      title: "Title Required",
+      description: "Please enter a title for your lesson.",
+      variant: "destructive",
+    });
+    return;
+  }
 
-    if (!newLessonData.lessonNumber.trim() || isNaN(newLessonData.lessonNumber)) {
-      toast({
-        title: "Lesson Number Required",
-        description: "Please enter a valid lesson number.",
-        variant: "destructive",
-      });
-      return;
-    }
+  if (!newLessonData.lessonNumber.trim() || isNaN(newLessonData.lessonNumber)) {
+    toast({
+      title: "Lesson Number Required",
+      description: "Please enter a valid lesson number.",
+      variant: "destructive",
+    });
+    return;
+  }
 
-    // Create a basic unit structure with the provided title and description
-    const newUnit = {
-      id: `unit_${Date.now()}`,
+  // Create a basic unit structure with the provided title and description
+  const newUnit = {
+    id: `unit_${Date.now()}`,
+    title: newLessonData.title,
+    description: newLessonData.description,
+    type: 'lesson',
+    status: 'draft',
+    duration: '0 min',
+    blocks: [],
+    settings: {
       title: newLessonData.title,
       description: newLessonData.description,
-      type: 'lesson',
-      status: 'draft',
-      duration: '0 min',
-      blocks: [],
-      settings: {
-        title: newLessonData.title,
-        description: newLessonData.description,
-        lessonNumber: newLessonData.lessonNumber,
-        theme: 'Modern',
-        fontFamily: 'Inter',
-        primaryColor: '#3b82f6'
-      }
-    };
-
-    // Save to localStorage
-    const savedUnits = JSON.parse(localStorage.getItem('units') || []);
-    savedUnits.push(newUnit);
-    localStorage.setItem('units', JSON.stringify(savedUnits));
-
-    // Navigate to the creator with the new unit ID
-    navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator/${newUnit.id}`);
+      lessonNumber: newLessonData.lessonNumber,
+      theme: 'Modern',
+      fontFamily: 'Inter',
+      primaryColor: '#3b82f6'
+    }
   };
 
+  // Save to localStorage
+  const savedUnits = JSON.parse(localStorage.getItem('units') || '[]');
+  const updatedUnits = [...savedUnits, newUnit];
+  localStorage.setItem('units', JSON.stringify(updatedUnits));
+
+  // Update state
+  setUnits(updatedUnits);
+
+  // Navigate to the creator with the new unit ID
+  navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator/${newUnit.id}`);
+};
   const handleEditUnit = (unitId) => {
     navigate(`/courses/builder/${courseId}/modules/${moduleId}/units/creator/${unitId}`);
   };
